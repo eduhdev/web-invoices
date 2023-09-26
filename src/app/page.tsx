@@ -1,9 +1,9 @@
-import Image from 'next/image'
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   return (
-    <main className=" p-24">
-     <h2>Web Invoice</h2>
+    <main className='p-8'>
+      <Button>Web Invoice App</Button>
     </main>
-  )
+  );
 }
