@@ -7,27 +7,31 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { invoicesMock } from '@/lib/mocks';
+import { getInvoices } from '@/hooks/invoices';
 import { formatToPrice } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import { Spinner } from './Spinner';
 
-const InvoiceTable = ({ filter }: { filter: string }) => {
-  const [invoices, setInvoices] = useState(invoicesMock);
+type Invoice = {
+  id: number;
+  client_name: string;
+  total_amount: number;
+  status: 'all' | 'paid' | 'unpaid';
+};
+
+const InvoiceTable = ({ filter }: { filter: 'all' | 'paid' | 'unpaid' }) => {
+  const [loading, setLoading] = useState(false);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+
+  const fetchInvoices = async () => {
+    setLoading(true);
+    const allInvoices = await getInvoices(filter);
+    setInvoices(allInvoices);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    if (filter === 'all') {
-      setInvoices(invoicesMock);
-    } else if (filter === 'paid') {
-      const filterByPaid = invoicesMock.filter(
-        (invoice) => invoice.status === 'paid'
-      );
-      setInvoices(filterByPaid);
-    } else {
-      const filterByUnpaid = invoicesMock.filter(
-        (invoice) => invoice.status === 'unpaid'
-      );
-      setInvoices(filterByUnpaid);
-    }
+    fetchInvoices();
   }, [filter]);
 
   return (
@@ -41,22 +45,30 @@ const InvoiceTable = ({ filter }: { filter: string }) => {
           <TableHead className='text-right'>Status</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.id}>
-            <TableCell className='font-medium'>INV-{invoice.id}</TableCell>
-            <TableCell>{invoice.client_name}</TableCell>
-            <TableCell>{formatToPrice(invoice.total_amount)}</TableCell>
-            <TableCell
-              className={`text-right capitalize ${
-                invoice.status === 'paid' ? 'text-green-600' : 'text-red-700'
-              }`}
-            >
-              {invoice.status}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+      {loading ? (
+        <TableRow>
+          <TableCell colSpan={4}>
+            <Spinner />
+          </TableCell>
+        </TableRow>
+      ) : (
+        <TableBody>
+          {invoices.map((invoice) => (
+            <TableRow key={invoice.id}>
+              <TableCell className='font-medium'>INV-{invoice.id}</TableCell>
+              <TableCell>{invoice.client_name}</TableCell>
+              <TableCell>{formatToPrice(invoice.total_amount)}</TableCell>
+              <TableCell
+                className={`text-right capitalize ${
+                  invoice.status === 'paid' ? 'text-green-600' : 'text-red-700'
+                }`}
+              >
+                {invoice.status}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      )}
     </Table>
   );
 };

@@ -3,7 +3,7 @@
 import InvoiceTable from '@/components/InvoiceTable';
 import { Button } from '@/components/ui/button';
 import { TabsList, TabItem } from '@/components/ui/tabs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Dashboard = () => {
   const [currentTab, setCurrentTab] = useState('all');
