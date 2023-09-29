@@ -19,7 +19,9 @@ export default function DashboardLayout({
           <Link href='/dashboard'>Home</Link>
         </div>
       </div>
-      <div className='flex flex-1'>{children}</div>
+      <div className='flex flex-1'>
+        <div className='flex-1 pt-8 px-4'>{children}</div>
+      </div>
     </div>
   );
 }

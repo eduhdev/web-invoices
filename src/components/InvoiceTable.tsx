@@ -36,7 +36,7 @@ const InvoiceTable = ({ filter }: { filter: 'all' | 'paid' | 'unpaid' }) => {
 
   return (
     <Table className='mt-6'>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption className='mt-8 pt-4 border-t-2'>A list of your recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className='w-[100px]'>Invoice</TableHead>
@@ -54,12 +54,12 @@ const InvoiceTable = ({ filter }: { filter: 'all' | 'paid' | 'unpaid' }) => {
       ) : (
         <TableBody>
           {invoices.map((invoice) => (
-            <TableRow key={invoice.id}>
+            <TableRow className='h-12' key={invoice.id}>
               <TableCell className='font-medium'>INV-{invoice.id}</TableCell>
               <TableCell>{invoice.client_name}</TableCell>
               <TableCell>{formatToPrice(invoice.total_amount)}</TableCell>
               <TableCell
-                className={`text-right capitalize ${
+                className={`text-right font-semibold capitalize ${
                   invoice.status === 'paid' ? 'text-green-600' : 'text-red-700'
                 }`}
               >

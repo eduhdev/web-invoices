@@ -3,16 +3,21 @@
 import InvoiceTable from '@/components/InvoiceTable';
 import { Button } from '@/components/ui/button';
 import { TabsList, TabItem } from '@/components/ui/tabs';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 const Dashboard = () => {
-  const [currentTab, setCurrentTab] = useState('all');
+  const [currentTab, setCurrentTab] = useState<'all' | 'paid' | 'unpaid'>(
+    'all'
+  );
 
   return (
-    <div className='flex-1 pt-8 px-4'>
+    <>
       <h1 className='text-4xl font-semibold'>Invoices List</h1>
       <div className='flex justify-between mt-4'>
-        <Button>Create New</Button>
+        <Link href='/invoices/create'>
+          <Button>Create New</Button>
+        </Link>
         <TabsList>
           <TabItem
             active={currentTab === 'all'}
@@ -32,7 +37,7 @@ const Dashboard = () => {
         </TabsList>
       </div>
       <InvoiceTable filter={currentTab} />
-    </div>
+    </>
   );
 };
 
