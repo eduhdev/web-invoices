@@ -21,14 +21,15 @@ import {
 } from '@/components/ui/table';
 import { getClients } from '@/hooks/clients';
 import { useEffect, useState } from 'react';
+
+export type ClientsProps = {
+  id: number,
+  name: string,
+}
+
 const ClientsPage = () => {
   const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState<ClientsProps[]>([]);
-
-  type ClientsProps = {
-    id: number,
-    name: string,
-  }
 
   const fetchClients = async () => {
     setLoading(true);

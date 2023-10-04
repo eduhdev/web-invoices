@@ -1,5 +1,8 @@
+'use client';
+
 import { DatePicker } from '@/components/DatePicker';
 import { Button } from '@/components/ui/button';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import {
   Dialog,
   DialogContent,
@@ -19,18 +22,57 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import { getClients } from '@/hooks/clients';
 import { invoicesMock } from '@/lib/mocks';
 import { formatToPrice } from '@/lib/utils';
+import { useEffect, useState } from 'react';
+import { ClientsProps } from '../../clients/page';
+import { Input } from '@/components/ui/input';
 
 const CreateInvoicePage = () => {
-  const totalAmount = invoicesMock[0].items?.reduce((accumulator, item) => accumulator + item.amount, 0) || 0;
+  const [status, setStatus] = useState('unpaid');
+  const [description, setDescription] = useState<string>('');
+  const [amount, setAmount] = useState('0');
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [invoicesItems, setInvoiceItems] = useState<[]>(
+    invoicesMock[0]?.items || []
+  );
+  const [loading, setLoading] = useState(false);
+  const [clients, setClients] = useState<ClientsProps[]>([]);
+
+  const fetchClients = async () => {
+    setLoading(true);
+    const allClients = await getClients();
+    setClients(allClients);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
+  const totalAmount =
+    invoicesItems?.reduce(
+      (accumulator, item) => accumulator + item.amount,
+      0
+    ) || 0;
+
+  const handleAddItem = () => {
+    const newArray = {
+      id: invoicesItems?.length - 1 || 1,
+      description: description,
+      amount: Number(amount),
+    };
+
+    setInvoiceItems((invoices) => [...invoices, newArray]);
+  };
+
   return (
     <>
       <h1 className='text-4xl font-semibold'>Create Invoice</h1>
@@ -41,9 +83,11 @@ const CreateInvoicePage = () => {
             <SelectValue placeholder='Select a client' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='client1'>Client 1</SelectItem>
-            <SelectItem value='client2'>Client 2</SelectItem>
-            <SelectItem value='client3'>Client 3</SelectItem>
+            {clients.map((client) => (
+              <SelectItem value={client.id.toString()}>
+                {client.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <Dialog>
@@ -54,18 +98,35 @@ const CreateInvoicePage = () => {
             <DialogHeader>
               <DialogTitle>What did you achieve during that time?</DialogTitle>
               <DialogDescription>
-                Especify the tasks you worked and the due date.
+                Especify the tasks you worked and the amount charged.
               </DialogDescription>
             </DialogHeader>
-            <div className='grid gap-4 py-4'>
-              <Textarea rows={6} placeholder='Fix CSS issues' />
-              <DatePicker />
+            <div className='flex flex-col gap-4 py-4'>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className='w-full'
+                rows={6}
+                placeholder='Fix CSS issues'
+              />
+              <Input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder='Amount'
+                className='w-36'
+                type='number'
+              />
             </div>
-            <DialogFooter>
-              <Button type='submit'>Finish</Button>
+            <DialogFooter className='flex justify-end'>
+              <DialogPrimitive.Close>
+                <Button onClick={handleAddItem}>Add Item</Button>
+              </DialogPrimitive.Close>
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        <div className='ml-auto'>
+          <DatePicker />
+        </div>
       </div>
 
       <Table className='border mt-6'>
@@ -73,21 +134,37 @@ const CreateInvoicePage = () => {
           <TableRow>
             <TableHead>Description</TableHead>
             <TableHead className='w-[100px]'>Amount</TableHead>
-            <TableHead className='text-right'>Due date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoicesMock[0].items?.map((item) => (
+          {invoicesItems?.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.description}</TableCell>
               <TableCell>{formatToPrice(item.amount)}</TableCell>
-              <TableCell className='text-right'>{item.due_date}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <div className='flex justify-end mt-6'>
         <p className='text-xl font-bold'>Total: {formatToPrice(totalAmount)}</p>
+      </div>
+      <div className='flex justify-end mt-10 gap-2'>
+        <Button>Save</Button>
+        {status === 'unpaid' ? (
+          <Button
+            className='bg-green-500 hover:bg-green-400'
+            onClick={() => setStatus('paid')}
+          >
+            Mark as paid
+          </Button>
+        ) : (
+          <Button
+            className=' bg-red-500 hover:bg-red-400'
+            onClick={() => setStatus('unpaid')}
+          >
+            Mark as unpaid
+          </Button>
+        )}
       </div>
     </>
   );
