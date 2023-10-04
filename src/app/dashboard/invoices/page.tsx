@@ -15,7 +15,7 @@ const Dashboard = () => {
     <>
       <h1 className='text-4xl font-semibold'>Invoices List</h1>
       <div className='flex justify-between mt-4'>
-        <Link href='/invoices/create'>
+        <Link href='/dashboard/invoices/create'>
           <Button>Create New</Button>
         </Link>
         <TabsList>

@@ -62,3 +62,8 @@ export const invoicesMock = [
     status: 'paid',
   },
 ];
+
+export const clientsMock = [
+  { id: 1, name: 'Client 1' },
+  { id: 2, name: 'Client 2' },
+];

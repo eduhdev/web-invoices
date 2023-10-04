@@ -15,8 +15,9 @@ export default function DashboardLayout({
           <AvatarFallback>Edu</AvatarFallback>
         </Avatar>
         <Separator className='opacity-50' />
-        <div className='text-white text-lg space-y-2 mt-8'>
-          <Link href='/dashboard'>Home</Link>
+        <div className='text-white text-lg space-y-2 mt-8 flex flex-col text-center'>
+          <Link href='/dashboard/invoices'>Invoices</Link>
+          <Link href='/dashboard/clients'>Clients</Link>
         </div>
       </div>
       <div className='flex flex-1'>
