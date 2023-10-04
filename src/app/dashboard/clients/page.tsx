@@ -19,28 +19,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getClients } from '@/hooks/clients';
-import { useEffect, useState } from 'react';
+import { useClients } from '@/hooks/useClients';
 
 export type ClientsProps = {
-  id: number,
-  name: string,
-}
+  id: number;
+  name: string;
+};
 
 const ClientsPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [clients, setClients] = useState<ClientsProps[]>([]);
-
-  const fetchClients = async () => {
-    setLoading(true);
-    const allClients = await getClients();
-    setClients(allClients);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchClients();
-  }, []);
+  const { loading, clients } = useClients();
 
   return (
     <>
