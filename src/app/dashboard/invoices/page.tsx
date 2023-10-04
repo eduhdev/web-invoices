@@ -1,43 +1,25 @@
-'use client';
-
 import InvoiceTable from '@/components/InvoiceTable';
 import { Button } from '@/components/ui/button';
 import { TabsList, TabItem } from '@/components/ui/tabs';
+import { InvoicesProvider } from '@/hooks/useInvoices';
 import Link from 'next/link';
-import { useState } from 'react';
 
 const Dashboard = () => {
-  const [currentTab, setCurrentTab] = useState<'all' | 'paid' | 'unpaid'>(
-    'all'
-  );
-
   return (
-    <>
+    <InvoicesProvider>
       <h1 className='text-4xl font-semibold'>Invoices List</h1>
       <div className='flex justify-between mt-4'>
         <Link href='/dashboard/invoices/create'>
           <Button>Create New</Button>
         </Link>
         <TabsList>
-          <TabItem
-            active={currentTab === 'all'}
-            handleChange={() => setCurrentTab('all')}
-            title='All'
-          />
-          <TabItem
-            active={currentTab === 'paid'}
-            handleChange={() => setCurrentTab('paid')}
-            title='Paid'
-          />
-          <TabItem
-            active={currentTab === 'unpaid'}
-            handleChange={() => setCurrentTab('unpaid')}
-            title='Unpaid'
-          />
+          <TabItem value='all' />
+          <TabItem value='paid' />
+          <TabItem value='unpaid' />
         </TabsList>
       </div>
-      <InvoiceTable filter={currentTab} />
-    </>
+      <InvoiceTable />
+    </InvoicesProvider>
   );
 };
 

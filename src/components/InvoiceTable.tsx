@@ -1,3 +1,4 @@
+'use client';
 import {
   Table,
   TableBody,
@@ -7,36 +8,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getInvoices } from '@/hooks/invoices';
 import { formatToPrice } from '@/lib/utils';
-import { useEffect, useState } from 'react';
 import { Spinner } from './Spinner';
+import { useInvoices } from '@/hooks/useInvoices';
 
-type Invoice = {
-  id: number;
-  client_name: string;
-  total_amount: number;
-  status: 'all' | 'paid' | 'unpaid';
-};
-
-const InvoiceTable = ({ filter }: { filter: 'all' | 'paid' | 'unpaid' }) => {
-  const [loading, setLoading] = useState(false);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-
-  const fetchInvoices = async () => {
-    setLoading(true);
-    const allInvoices = await getInvoices(filter);
-    setInvoices(allInvoices);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchInvoices();
-  }, [filter]);
-
+const InvoiceTable = () => {
+  const { loading, filteredInvoices } = useInvoices();
+  
   return (
     <Table className='mt-6'>
-      <TableCaption className='mt-8 pt-4 border-t-2'>A list of your recent invoices.</TableCaption>
+      <TableCaption className='mt-8 pt-4 border-t-2'>
+        A list of your recent invoices.
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className='w-[100px]'>Invoice</TableHead>
@@ -53,20 +36,28 @@ const InvoiceTable = ({ filter }: { filter: 'all' | 'paid' | 'unpaid' }) => {
         </TableRow>
       ) : (
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow className='h-12' key={invoice.id}>
-              <TableCell className='font-medium'>INV-{invoice.id}</TableCell>
-              <TableCell>{invoice.client_name}</TableCell>
-              <TableCell>{formatToPrice(invoice.total_amount)}</TableCell>
-              <TableCell
-                className={`text-right font-semibold capitalize ${
-                  invoice.status === 'paid' ? 'text-green-600' : 'text-red-700'
-                }`}
-              >
-                {invoice.status}
-              </TableCell>
-            </TableRow>
-          ))}
+          {filteredInvoices.map((invoice) => {
+            const totalAmount = invoice.items.reduce(
+              (acc, item) => acc + item.amount,
+              0
+            );
+            return (
+              <TableRow className='h-12' key={invoice.id}>
+                <TableCell className='font-medium'>INV-{invoice.id}</TableCell>
+                <TableCell>{invoice.clientName}</TableCell>
+                <TableCell>{formatToPrice(totalAmount)}</TableCell>
+                <TableCell
+                  className={`text-right font-semibold capitalize ${
+                    invoice.status === 'paid'
+                      ? 'text-green-600'
+                      : 'text-red-700'
+                  }`}
+                >
+                  {invoice.status}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       )}
     </Table>
