@@ -1,5 +1,6 @@
 'use client';
 
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Spinner } from '@/components/Spinner';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +20,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { addClient } from '@/hooks/clients';
 import { useClients } from '@/hooks/useClients';
+import { useState } from 'react';
 
 export type ClientsProps = {
   id: number;
@@ -27,7 +30,8 @@ export type ClientsProps = {
 };
 
 const ClientsPage = () => {
-  const { loading, clients } = useClients();
+  const [clientName, setClientName] = useState<string>('');
+  const { loading, clients, addNewClient } = useClients();
 
   return (
     <>
@@ -41,10 +45,23 @@ const ClientsPage = () => {
           <DialogHeader>
             <DialogTitle>Add a new Client</DialogTitle>
           </DialogHeader>
-          <Input placeholder='Client name' />
+          <Input
+            value={clientName}
+            placeholder='Client name'
+            onChange={(e) => setClientName(e.target.value)}
+          />
           <DialogFooter>
             <div className='flex justify-end w-full'>
-              <Button type='submit'>Save</Button>
+              <DialogPrimitive.Close>
+                <Button
+                  onClick={() => {
+                    addNewClient({ name: clientName });
+                  }}
+                  type='submit'
+                >
+                  Save
+                </Button>
+              </DialogPrimitive.Close>
             </div>
           </DialogFooter>
         </DialogContent>

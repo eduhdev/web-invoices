@@ -1,6 +1,7 @@
 'use client';
+
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getClients } from './clients';
+import { addClient, getClients } from './clients';
 
 export type Client = {
   id: number;
@@ -10,11 +11,13 @@ export type Client = {
 type ClientsContextData = {
   clients: Client[];
   loading: boolean;
+  addNewClient: ({ name }: { name: string }) => void;
 };
 
 const ClientsDefaultValues = {
   clients: [],
   loading: false,
+  addNewClient: () => null,
 };
 
 export const ClientsContext =
@@ -35,11 +38,19 @@ const ClientsProvider = ({ children }: { children: React.ReactNode }) => {
     fetchClients();
   }, []);
 
+  const addNewClient = async ({ name }: { name: string }) => {
+    setLoading(true);
+    const newClient = await addClient({ id: clients.length - 1, name });
+    setClients((allClients) => [...allClients, newClient]);
+    setLoading(false);
+  };
+
   return (
     <ClientsContext.Provider
       value={{
         clients,
         loading,
+        addNewClient,
       }}
     >
       {children}
