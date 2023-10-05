@@ -1,8 +1,10 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getInvoices } from './invoices';
+import { addInvoice, getInvoices } from './invoices';
 
 export type InvoiceFilter = 'all' | 'paid' | 'unpaid';
+export type InvoiceStatus = Exclude<InvoiceFilter, 'all'>;
+export type PostInvoice = Exclude<Invoice, 'id'>;
 
 export type InvoiceItem = {
   id: number;
@@ -12,8 +14,8 @@ export type InvoiceItem = {
 
 export type Invoice = {
   id: number;
-  clientName: string;
-  status: Exclude<InvoiceFilter, 'all'>;
+  clientId: number;
+  status: InvoiceStatus;
   dueDate: number;
   items: InvoiceItem[];
 };
@@ -24,6 +26,7 @@ type InvoiceContextData = {
   loading: boolean;
   currentTab: String;
   setCurrentTab: (tab: InvoiceFilter) => void;
+  addNewInvoice: (invoice: Omit<Invoice, 'id'>) => void;
 };
 
 const InvoiceContextDefaultValues = {
@@ -32,6 +35,7 @@ const InvoiceContextDefaultValues = {
   loading: false,
   currentTab: 'all',
   setCurrentTab: () => null,
+  addNewInvoice: () => null,
 };
 
 export const InvoicesContext = createContext<InvoiceContextData>(
@@ -46,16 +50,38 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchInvoices = async () => {
     setLoading(true);
-    const invoices = await getInvoices(currentTab);
-    if (allInvoices.length === 0) {
-      setAllInvoices(invoices);
-    }
+    const invoices = await getInvoices();
+    setAllInvoices(invoices);
     setFilteredInvoices(invoices);
     setLoading(false);
   };
 
+  const filterInvoices = () => {
+    if (currentTab === 'all') {
+      setFilteredInvoices(allInvoices);
+    } else {
+      const filterInvoices = allInvoices.filter(
+        (invoice) => invoice.status === currentTab
+      );
+      setFilteredInvoices(filterInvoices);
+    }
+  };
+
+  const addNewInvoice = async (invoice: Omit<Invoice, 'id'>) => {
+    const newInvoice = await addInvoice({
+      id: allInvoices.length + 1,
+      ...invoice,
+    });
+    setAllInvoices((currentInvoices) => [...currentInvoices, newInvoice]);
+    setFilteredInvoices([...allInvoices, newInvoice]);
+  };
+
   useEffect(() => {
     fetchInvoices();
+  }, []);
+
+  useEffect(() => {
+    if (allInvoices.length > 0) filterInvoices();
   }, [currentTab]);
 
   return (
@@ -65,6 +91,7 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
         filteredInvoices,
         loading,
         currentTab,
+        addNewInvoice,
         setCurrentTab,
       }}
     >
@@ -76,4 +103,3 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
 const useInvoices = () => useContext(InvoicesContext);
 
 export { InvoicesProvider, useInvoices };
- 

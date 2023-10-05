@@ -1,6 +1,8 @@
-async function getInvoices(filters: 'all' | 'paid' | 'unpaid') {
+import { Invoice } from './useInvoices';
+
+async function getInvoices() {
   try {
-    const response = await fetch(`/api/invoice?filter=${filters || 'all'}`);
+    const response = await fetch('/api/invoice');
     if (!response.ok) {
       throw new Error('Failed to fetch invoices');
     }
@@ -12,4 +14,24 @@ async function getInvoices(filters: 'all' | 'paid' | 'unpaid') {
   }
 }
 
-export { getInvoices };
+async function addInvoice(invoice: Invoice) {
+  const postOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(invoice),
+  };
+
+  try {
+    const response = await fetch('/api/invoice', postOptions);
+    if (!response.ok) {
+      throw new Error('Failed to fetch invoices');
+    }
+    const invoice = await response.json();
+    return invoice;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export { getInvoices, addInvoice };

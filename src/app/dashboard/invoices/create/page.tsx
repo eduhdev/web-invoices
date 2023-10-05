@@ -28,44 +28,32 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
-import { getClients } from '@/hooks/clients';
-import { invoicesMock } from '@/lib/mocks';
 import { formatToPrice } from '@/lib/utils';
-import { useEffect, useState } from 'react';
-import { ClientsProps } from '../../clients/page';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { useClients } from '@/hooks/useClients';
+import { InvoiceItem, InvoiceStatus, useInvoices } from '@/hooks/useInvoices';
+import { useRouter } from 'next/navigation';
 
 const CreateInvoicePage = () => {
-  const [status, setStatus] = useState('unpaid');
+  const [status, setStatus] = useState<InvoiceStatus>('unpaid');
   const [description, setDescription] = useState<string>('');
   const [amount, setAmount] = useState('0');
-  const [isOpenDialog, setIsOpenDialog] = useState(false);
-  const [invoicesItems, setInvoiceItems] = useState<[]>(
-    invoicesMock[0]?.items || []
-  );
-  const [loading, setLoading] = useState(false);
-  const [clients, setClients] = useState<ClientsProps[]>([]);
+  const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([]);
+  const [clientId, setClientId] = useState<string | undefined>()
 
-  const fetchClients = async () => {
-    setLoading(true);
-    const allClients = await getClients();
-    setClients(allClients);
-    setLoading(false);
-  };
+  const { clients } = useClients();
+  const { addNewInvoice } = useInvoices();
 
-  useEffect(() => {
-    fetchClients();
-  }, []);
+  const router = useRouter();
 
   const totalAmount =
-    invoicesItems?.reduce(
-      (accumulator, item) => accumulator + item.amount,
-      0
-    ) || 0;
+    invoiceItems?.reduce((accumulator, item) => accumulator + item.amount, 0) ||
+    0;
 
   const handleAddItem = () => {
     const newArray = {
-      id: invoicesItems?.length - 1 || 1,
+      id: invoiceItems?.length + 1 || 1,
       description: description,
       amount: Number(amount),
     };
@@ -73,12 +61,24 @@ const CreateInvoicePage = () => {
     setInvoiceItems((invoices) => [...invoices, newArray]);
   };
 
+  const handleSaveInvoice = async () => {
+    const invoice = {
+      clientId: Number(clientId),
+      status,
+      dueDate: 800,
+      items: invoiceItems,
+    };
+
+    await addNewInvoice(invoice);
+    router.back();
+  };
+
   return (
     <>
       <h1 className='text-4xl font-semibold'>Create Invoice</h1>
 
       <div className='flex gap-4 mt-4'>
-        <Select>
+        <Select value={clientId} onValueChange={e => setClientId(e)}>
           <SelectTrigger className='w-[180px] h-10'>
             <SelectValue placeholder='Select a client' />
           </SelectTrigger>
@@ -137,7 +137,7 @@ const CreateInvoicePage = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoicesItems?.map((item) => (
+          {invoiceItems?.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.description}</TableCell>
               <TableCell>{formatToPrice(item.amount)}</TableCell>
@@ -149,7 +149,7 @@ const CreateInvoicePage = () => {
         <p className='text-xl font-bold'>Total: {formatToPrice(totalAmount)}</p>
       </div>
       <div className='flex justify-end mt-10 gap-2'>
-        <Button>Save</Button>
+        <Button onClick={handleSaveInvoice}>Save</Button>
         {status === 'unpaid' ? (
           <Button
             className='bg-green-500 hover:bg-green-400'

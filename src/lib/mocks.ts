@@ -1,8 +1,7 @@
 export const invoicesMock = [
   {
     id: 1,
-    client_name: 'Client 1',
-    total_amount: 100,
+    clientId: 2,
     status: 'paid',
     items: [
       {
@@ -34,8 +33,7 @@ export const invoicesMock = [
   },
   {
     id: 2,
-    client_name: 'Client 2',
-    total_amount: 200,
+    clientId: 1,
     status: 'unpaid',
     items: [
       {

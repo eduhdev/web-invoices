@@ -12,12 +12,14 @@ type ClientsContextData = {
   clients: Client[];
   loading: boolean;
   addNewClient: ({ name }: { name: string }) => void;
+  getClientName: (id: number) => string | undefined;
 };
 
 const ClientsDefaultValues = {
   clients: [],
   loading: false,
   addNewClient: () => null,
+  getClientName: () => undefined,
 };
 
 export const ClientsContext =
@@ -40,10 +42,13 @@ const ClientsProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addNewClient = async ({ name }: { name: string }) => {
     setLoading(true);
-    const newClient = await addClient({ id: clients.length - 1, name });
+    const newClient = await addClient({ id: clients.length + 1, name });
     setClients((allClients) => [...allClients, newClient]);
     setLoading(false);
   };
+
+  const getClientName = (id: number) =>
+    clients.find((client) => client.id === id)?.name;
 
   return (
     <ClientsContext.Provider
@@ -51,6 +56,7 @@ const ClientsProvider = ({ children }: { children: React.ReactNode }) => {
         clients,
         loading,
         addNewClient,
+        getClientName,
       }}
     >
       {children}
