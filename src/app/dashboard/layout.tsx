@@ -13,7 +13,7 @@ export default function DashboardLayout({
     <InvoicesProvider>
       <ClientsProvider>
         <div className='flex'>
-          <div className='w-full max-w-[15rem] bg-primary min-h-screen py-8 px-4 flex flex-col items-center'>
+          <div className='hidden md:flex w-full max-w-[15rem] bg-primary min-h-screen py-8 px-4 flex-col items-center'>
             <Avatar className='h-20 w-20 mb-8'>
               <AvatarImage src='https://github.com/eduhdev.png' />
               <AvatarFallback>Edu</AvatarFallback>

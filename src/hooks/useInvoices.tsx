@@ -27,6 +27,7 @@ type InvoiceContextData = {
   currentTab: String;
   setCurrentTab: (tab: InvoiceFilter) => void;
   addNewInvoice: (invoice: Omit<Invoice, 'id'>) => void;
+  getInvoiceById: (id: number) => Invoice | undefined;
 };
 
 const InvoiceContextDefaultValues = {
@@ -36,6 +37,7 @@ const InvoiceContextDefaultValues = {
   currentTab: 'all',
   setCurrentTab: () => null,
   addNewInvoice: () => null,
+  getInvoiceById: () => undefined,
 };
 
 export const InvoicesContext = createContext<InvoiceContextData>(
@@ -76,6 +78,13 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
     setFilteredInvoices([...allInvoices, newInvoice]);
   };
 
+  const getInvoiceById = (id: number) => {
+    const invoice: Invoice | undefined = allInvoices.find(
+      (inv) => inv.id === id
+    );
+    return invoice;
+  };
+
   useEffect(() => {
     fetchInvoices();
   }, []);
@@ -93,6 +102,7 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
         currentTab,
         addNewInvoice,
         setCurrentTab,
+        getInvoiceById
       }}
     >
       {children}
