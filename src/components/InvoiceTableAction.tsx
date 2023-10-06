@@ -19,7 +19,7 @@ export function InvoiceTableAction({ invoice }: {invoice: Invoice}) {
           <MoreVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-56'>
-          <Link href={`/dashboard/invoices/${invoice.id}`}>
+          <Link href={`/invoices/${invoice.id}`}>
             <DropdownMenuItem>Edit</DropdownMenuItem>
           </Link>
           <DropdownMenuItem onClick={() => handlePaidStatus(invoice)}>

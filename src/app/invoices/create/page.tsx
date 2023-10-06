@@ -1,7 +1,5 @@
 import CreateEditInvoice from '@/components/CreateEditInvoice';
 
-const CreateInvoicePage = () => {
+export default function CreateInvoicePage() {
   return <CreateEditInvoice />;
-};
-
-export default CreateInvoicePage;
+}

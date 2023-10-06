@@ -1,9 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <main className='p-8'>
-      <Button>Web Invoice App</Button>
-    </main>
-  );
+  redirect('/invoices');
 }
