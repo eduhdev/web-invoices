@@ -55,7 +55,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
   const [amount, setAmount] = useState('0');
 
   const { clients } = useClients();
-  const { addNewInvoice } = useInvoices();
+  const { saveInvoice } = useInvoices();
 
   const router = useRouter();
 
@@ -71,17 +71,20 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
     };
 
     setInvoiceItems((invoices) => [...invoices, newArray]);
+    setDescription("")
+    setAmount("")
   };
 
   const handleSaveInvoice = async () => {
-    const invoice = {
+    const newInvoice = {
+      id: invoice?.id,
       clientId: Number(clientId),
       status,
       dueDate: 800,
       items: invoiceItems,
     };
 
-    await addNewInvoice(invoice);
+    await saveInvoice(newInvoice);
     router.back();
   };
 
@@ -163,6 +166,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
         <p className='text-xl font-bold'>Total: {formatToPrice(totalAmount)}</p>
       </div>
       <div className='flex justify-end mt-10 gap-2'>
+        <Button className='mr-auto' variant="outline" onClick={() => router.back()}>Back</Button>
         <Button onClick={handleSaveInvoice}>Save</Button>
         {status === 'unpaid' ? (
           <Button

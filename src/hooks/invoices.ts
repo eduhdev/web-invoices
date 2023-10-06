@@ -34,4 +34,25 @@ async function addInvoice(invoice: Invoice) {
   }
 }
 
-export { getInvoices, addInvoice };
+async function updateInvoice(invoice: Invoice) {
+  const postOptions = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(invoice),
+  };
+
+  try {
+    const response = await fetch('/api/invoice', postOptions);
+    if (!response.ok) {
+      throw new Error('Failed to fetch invoices');
+    }
+    const invoice = await response.json();
+    return invoice;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+export { getInvoices, addInvoice, updateInvoice };

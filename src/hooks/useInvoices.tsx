@@ -1,6 +1,6 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { addInvoice, getInvoices } from './invoices';
+import { addInvoice, getInvoices, updateInvoice } from './invoices';
 
 export type InvoiceFilter = 'all' | 'paid' | 'unpaid';
 export type InvoiceStatus = Exclude<InvoiceFilter, 'all'>;
@@ -26,7 +26,7 @@ type InvoiceContextData = {
   loading: boolean;
   currentTab: String;
   setCurrentTab: (tab: InvoiceFilter) => void;
-  addNewInvoice: (invoice: Omit<Invoice, 'id'>) => void;
+  saveInvoice: (invoice: Omit<Invoice, 'id'> & { id?: number }) => void;
   getInvoiceById: (id: number) => Invoice | undefined;
 };
 
@@ -36,7 +36,7 @@ const InvoiceContextDefaultValues = {
   loading: false,
   currentTab: 'all',
   setCurrentTab: () => null,
-  addNewInvoice: () => null,
+  saveInvoice: () => null,
   getInvoiceById: () => undefined,
 };
 
@@ -69,13 +69,28 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const addNewInvoice = async (invoice: Omit<Invoice, 'id'>) => {
-    const newInvoice = await addInvoice({
-      id: allInvoices.length + 1,
-      ...invoice,
-    });
-    setAllInvoices((currentInvoices) => [...currentInvoices, newInvoice]);
-    setFilteredInvoices([...allInvoices, newInvoice]);
+  const saveInvoice = async (
+    invoice: Omit<Invoice, 'id'> & { id?: number }
+  ) => {
+    let updatedInvoiceList: Invoice[];
+
+    if (invoice?.id) {
+      const updatedInvoice = await updateInvoice(invoice as Invoice);
+      updatedInvoiceList = allInvoices.map((item) =>
+        invoice.id === item.id ? updatedInvoice : item
+      );
+      setAllInvoices(updatedInvoiceList);
+      setFilteredInvoices(updatedInvoiceList);
+    } else {
+      const newInvoice = await addInvoice({
+        ...invoice,
+        id: allInvoices.length + 1,
+      });
+      updatedInvoiceList = [...allInvoices, newInvoice];
+    }
+    setAllInvoices(updatedInvoiceList);
+    setFilteredInvoices(updatedInvoiceList);
+    setCurrentTab('all')
   };
 
   const getInvoiceById = (id: number) => {
@@ -100,9 +115,9 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
         filteredInvoices,
         loading,
         currentTab,
-        addNewInvoice,
+        saveInvoice,
         setCurrentTab,
-        getInvoiceById
+        getInvoiceById,
       }}
     >
       {children}

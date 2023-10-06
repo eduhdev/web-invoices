@@ -16,7 +16,6 @@ const TabsList = ({ children }: { children: ReactNode }) => (
 
 const TabItem = ({ value }: { value: InvoiceFilter }) => {
   const { currentTab, setCurrentTab } = useInvoices();
-  console.log(currentTab)
 
   return (
     <div

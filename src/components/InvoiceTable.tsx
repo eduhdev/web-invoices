@@ -12,6 +12,7 @@ import { formatToPrice } from '@/lib/utils';
 import { Spinner } from './Spinner';
 import { useInvoices } from '@/hooks/useInvoices';
 import { useClients } from '@/hooks/useClients';
+import { InvoiceTableAction } from './InvoiceTableAction';
 
 const InvoiceTable = () => {
   const { loading, filteredInvoices } = useInvoices();
@@ -27,7 +28,8 @@ const InvoiceTable = () => {
           <TableHead className='w-[100px]'>Invoice</TableHead>
           <TableHead>Client Name</TableHead>
           <TableHead>Total Amount</TableHead>
-          <TableHead className='text-right'>Status</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className='text-right'>Action</TableHead>
         </TableRow>
       </TableHeader>
       {loading ? (
@@ -50,13 +52,16 @@ const InvoiceTable = () => {
                 <TableCell>{clientName}</TableCell>
                 <TableCell>{formatToPrice(totalAmount)}</TableCell>
                 <TableCell
-                  className={`text-right font-semibold capitalize ${
+                  className={`font-semibold capitalize ${
                     invoice.status === 'paid'
                       ? 'text-green-600'
                       : 'text-red-700'
                   }`}
                 >
                   {invoice.status}
+                </TableCell>
+                <TableCell className='flex justify-end pr-4'>
+                  <InvoiceTableAction id={invoice.id} status={invoice.status} />
                 </TableCell>
               </TableRow>
             );

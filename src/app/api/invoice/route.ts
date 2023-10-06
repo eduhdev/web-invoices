@@ -11,3 +11,9 @@ export async function POST(req: Request) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return NextResponse.json(res);
 }
+
+export async function PUT(req: Request) {
+  const res = await req.json();
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return NextResponse.json(res);
+}
