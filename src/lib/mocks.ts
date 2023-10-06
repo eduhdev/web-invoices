@@ -2,7 +2,8 @@ export const invoicesMock = [
   {
     id: 1,
     clientId: 2,
-    status: 'paid',
+    paid: true,
+    dueDate: "2023-10-24T03:00:00.000Z",
     items: [
       {
         id: 1,
@@ -34,7 +35,8 @@ export const invoicesMock = [
   {
     id: 2,
     clientId: 1,
-    status: 'unpaid',
+    paid: false,
+    dueDate: "2023-10-24T03:00:00.000Z",
     items: [
       {
         id: 1,

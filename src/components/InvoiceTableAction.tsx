@@ -1,19 +1,17 @@
+"use client"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { InvoiceStatus } from '@/hooks/useInvoices';
+import { Invoice, InvoiceStatus, useInvoices } from '@/hooks/useInvoices';
 import { MoreVertical } from 'lucide-react';
 import Link from 'next/link';
 
-type TableAction = {
-  id: number;
-  status: InvoiceStatus;
-};
-
-export function InvoiceTableAction({ id, status }: TableAction) {
+export function InvoiceTableAction({ invoice }: {invoice: Invoice}) {
+  const { handlePaidStatus } = useInvoices()
   return (
     <div className=' cursor-pointer'>
       <DropdownMenu>
@@ -21,11 +19,11 @@ export function InvoiceTableAction({ id, status }: TableAction) {
           <MoreVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-56'>
-          <Link href={`/dashboard/invoices/${id}`}>
+          <Link href={`/dashboard/invoices/${invoice.id}`}>
             <DropdownMenuItem>Edit</DropdownMenuItem>
           </Link>
-          <DropdownMenuItem>
-            Mark as {status === 'paid' ? 'Unpaid' : 'Paid'}
+          <DropdownMenuItem onClick={() => handlePaidStatus(invoice)}>
+            Mark as {invoice.paid ? 'Unpaid' : 'Paid'}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

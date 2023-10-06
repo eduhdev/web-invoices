@@ -26,8 +26,8 @@ async function addInvoice(invoice: Invoice) {
     if (!response.ok) {
       throw new Error('Failed to fetch invoices');
     }
-    const invoice = await response.json();
-    return invoice;
+    const newInvoice = await response.json();
+    return newInvoice;
   } catch (error) {
     console.error(error);
     throw error;
@@ -46,8 +46,28 @@ async function updateInvoice(invoice: Invoice) {
     if (!response.ok) {
       throw new Error('Failed to fetch invoices');
     }
-    const invoice = await response.json();
-    return invoice;
+    const updatedInvoice = await response.json();
+    return updatedInvoice;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function markAsPaidOrUnpaid(invoice: Invoice) {
+  const postOptions = {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(invoice),
+  };
+
+  try {
+    const response = await fetch(`/api/invoice/${invoice.id}`, postOptions);
+    if (!response.ok) {
+      throw new Error('Failed to fetch invoices');
+    }
+    const updatedInvoice = await response.json();
+    return updatedInvoice;
   } catch (error) {
     console.error(error);
     throw error;
@@ -55,4 +75,4 @@ async function updateInvoice(invoice: Invoice) {
 }
 
 
-export { getInvoices, addInvoice, updateInvoice };
+export { getInvoices, addInvoice, updateInvoice, markAsPaidOrUnpaid };

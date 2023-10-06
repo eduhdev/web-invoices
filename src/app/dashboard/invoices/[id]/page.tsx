@@ -1,5 +1,6 @@
 'use client';
 import CreateEditInvoice from '@/components/CreateEditInvoice';
+import { Spinner } from '@/components/Spinner';
 import { Invoice, useInvoices } from '@/hooks/useInvoices';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -13,13 +14,13 @@ const EditInvoicePage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (allInvoices.length > 0) {
-      const getInvoice = getInvoiceById(Number(params.id));
-      if (!getInvoice) router.push('/dashboard/invoices');
-      setInvoice(getInvoice);
+      const singleInvoice = getInvoiceById(Number(params.id));
+      if (!singleInvoice) router.push('/dashboard/invoices');
+      setInvoice(singleInvoice);
       setLoading(false)
     }
   }, [params.id, allInvoices]);
-  if (loading) return <p>Loading</p>;
+  if (loading) return <Spinner />;
 
   return <CreateEditInvoice invoice={invoice} />;
 };

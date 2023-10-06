@@ -1,9 +1,9 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { addInvoice, getInvoices, updateInvoice } from './invoices';
+import { addInvoice, getInvoices, markAsPaidOrUnpaid, updateInvoice } from './invoices';
 
 export type InvoiceFilter = 'all' | 'paid' | 'unpaid';
-export type InvoiceStatus = Exclude<InvoiceFilter, 'all'>;
+export type InvoiceStatus = boolean;
 export type PostInvoice = Exclude<Invoice, 'id'>;
 
 export type InvoiceItem = {
@@ -15,8 +15,8 @@ export type InvoiceItem = {
 export type Invoice = {
   id: number;
   clientId: number;
-  status: InvoiceStatus;
-  dueDate: number;
+  paid: InvoiceStatus;
+  dueDate: Date;
   items: InvoiceItem[];
 };
 
@@ -28,6 +28,7 @@ type InvoiceContextData = {
   setCurrentTab: (tab: InvoiceFilter) => void;
   saveInvoice: (invoice: Omit<Invoice, 'id'> & { id?: number }) => void;
   getInvoiceById: (id: number) => Invoice | undefined;
+  handlePaidStatus: (invoice: Invoice) => void;
 };
 
 const InvoiceContextDefaultValues = {
@@ -38,6 +39,7 @@ const InvoiceContextDefaultValues = {
   setCurrentTab: () => null,
   saveInvoice: () => null,
   getInvoiceById: () => undefined,
+  handlePaidStatus: () => null,
 };
 
 export const InvoicesContext = createContext<InvoiceContextData>(
@@ -62,8 +64,9 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
     if (currentTab === 'all') {
       setFilteredInvoices(allInvoices);
     } else {
-      const filterInvoices = allInvoices.filter(
-        (invoice) => invoice.status === currentTab
+      const isPaid = currentTab === 'paid';
+      const filterInvoices = allInvoices.filter((invoice) =>
+        isPaid ? invoice.paid : !invoice.paid
       );
       setFilteredInvoices(filterInvoices);
     }
@@ -73,7 +76,8 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
     invoice: Omit<Invoice, 'id'> & { id?: number }
   ) => {
     let updatedInvoiceList: Invoice[];
-
+    if(!invoice.items.length || !invoice.clientId) return
+    
     if (invoice?.id) {
       const updatedInvoice = await updateInvoice(invoice as Invoice);
       updatedInvoiceList = allInvoices.map((item) =>
@@ -90,16 +94,27 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
     }
     setAllInvoices(updatedInvoiceList);
     setFilteredInvoices(updatedInvoiceList);
-    setCurrentTab('all')
+    setCurrentTab('all');
   };
 
   const getInvoiceById = (id: number) => {
     const invoice: Invoice | undefined = allInvoices.find(
-      (inv) => inv.id === id
+      (inv) =>   inv.id === id 
     );
-    return invoice;
+    return {...invoice as Invoice, dueDate: new Date(invoice!.dueDate)};
   };
 
+  const handlePaidStatus = async (invoice: Invoice) => {
+    setLoading(true)
+    const updatedInvoice = await markAsPaidOrUnpaid(invoice)
+    const updatedInvoiceList = allInvoices.map((item) =>
+        invoice.id === item.id ? updatedInvoice : item
+      );
+    setAllInvoices(updatedInvoiceList)
+    setFilteredInvoices(updatedInvoiceList)
+    setCurrentTab("all")
+    setLoading(false)
+  }
   useEffect(() => {
     fetchInvoices();
   }, []);
@@ -118,6 +133,7 @@ const InvoicesProvider = ({ children }: { children: React.ReactNode }) => {
         saveInvoice,
         setCurrentTab,
         getInvoiceById,
+        handlePaidStatus
       }}
     >
       {children}

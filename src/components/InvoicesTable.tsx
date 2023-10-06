@@ -34,7 +34,7 @@ const InvoiceTable = () => {
       </TableHeader>
       {loading ? (
         <TableRow>
-          <TableCell colSpan={4}>
+          <TableCell colSpan={5}>
             <Spinner />
           </TableCell>
         </TableRow>
@@ -53,15 +53,15 @@ const InvoiceTable = () => {
                 <TableCell>{formatToPrice(totalAmount)}</TableCell>
                 <TableCell
                   className={`font-semibold capitalize ${
-                    invoice.status === 'paid'
+                    invoice.paid
                       ? 'text-green-600'
                       : 'text-red-700'
                   }`}
                 >
-                  {invoice.status}
+                  {invoice.paid ? "Paid" : "Unpaid"}
                 </TableCell>
                 <TableCell className='flex justify-end pr-4'>
-                  <InvoiceTableAction id={invoice.id} status={invoice.status} />
+                  <InvoiceTableAction invoice={invoice} />
                 </TableCell>
               </TableRow>
             );

@@ -1,9 +1,9 @@
-import InvoiceTable from '@/components/InvoiceTable';
+import InvoicesTable from '@/components/InvoicesTable';
 import { Button } from '@/components/ui/button';
 import { TabsList, TabItem } from '@/components/ui/tabs';
 import Link from 'next/link';
 
-const Dashboard = () => {
+const InvoicesPage = () => {
   return (
     <>
       <h1 className='text-4xl font-semibold'>Invoices List</h1>
@@ -17,9 +17,9 @@ const Dashboard = () => {
           <TabItem value='unpaid' />
         </TabsList>
       </div>
-      <InvoiceTable />
+      <InvoicesTable />
     </>
   );
 };
 
-export default Dashboard;
+export default InvoicesPage;
