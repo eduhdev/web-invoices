@@ -27,7 +27,7 @@ const ClientSelector = ({
       value={value}
       onValueChange={handleChange}
     >
-      <SelectTrigger className='md:w-[180px] h-10'>
+      <SelectTrigger className='w-full md:w-[100px] lg:w-[180px] h-10'>
         <SelectValue placeholder='Select a client' />
       </SelectTrigger>
       <SelectContent>

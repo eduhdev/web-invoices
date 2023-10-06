@@ -34,16 +34,20 @@ const DialogNewClient = () => {
         />
         <DialogFooter>
           <div className='flex justify-end w-full'>
-            <DialogPrimitive.Close>
-              <Button
-                onClick={() => {
-                  addNewClient({ name: clientName });
-                }}
-                type='submit'
-              >
-                Save
-              </Button>
-            </DialogPrimitive.Close>
+            {clientName ? (
+              <DialogPrimitive.Close>
+                <Button
+                  onClick={() => {
+                    addNewClient({ name: clientName });
+                    setClientName('');
+                  }}
+                >
+                  Save
+                </Button>
+              </DialogPrimitive.Close>
+            ) : (
+              <Button variant='disabled'>Save</Button>
+            )}
           </div>
         </DialogFooter>
       </DialogContent>

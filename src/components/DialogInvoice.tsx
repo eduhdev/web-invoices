@@ -12,6 +12,7 @@ import {
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { useRef } from 'react';
+import { Label } from './ui/label';
 
 type DialogInvoiceProps = {
   onSubmit: () => void;
@@ -55,18 +56,26 @@ const DialogInvoice = ({
             rows={6}
             placeholder='Fix CSS issues'
           />
-          <Input
-            value={amount}
-            onChange={(e) => handleAmount(e.target.value)}
-            placeholder='Amount'
-            className='w-36'
-            type='number'
-          />
+          <div className='flex items-center justify-end gap-8'>
+            <Label htmlFor='amount'>Amount</Label>
+            <Input
+              id='amount'
+              value={amount}
+              onChange={(e) => handleAmount(e.target.value)}
+              placeholder='Amount'
+              className='w-36'
+              type='number'
+            />
+          </div>
         </div>
         <DialogFooter className='flex justify-end'>
-          <DialogPrimitive.Close>
-            <Button onClick={onSubmit}>Save</Button>
-          </DialogPrimitive.Close>
+          {description && amount ? (
+            <DialogPrimitive.Close>
+              <Button onClick={onSubmit}>Save</Button>
+            </DialogPrimitive.Close>
+          ) : (
+            <Button variant='disabled'>Save</Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

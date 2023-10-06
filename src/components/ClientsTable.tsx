@@ -4,6 +4,7 @@ import { Spinner } from './Spinner';
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -14,7 +15,10 @@ const ClientsTable = () => {
   const { loading, clients } = useClients();
 
   return (
-    <Table className='border mt-6'>
+    <Table className=' mt-6'>
+      <TableCaption className='mt-8 pt-4 border-t-2'>
+        A list of your clients.
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Client Name</TableHead>
@@ -25,7 +29,7 @@ const ClientsTable = () => {
           <Spinner />
         ) : (
           clients.map((client) => (
-            <TableRow key={client.id}>
+            <TableRow key={client.id} className='h-12'>
               <TableCell>{client.name}</TableCell>
             </TableRow>
           ))

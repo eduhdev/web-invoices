@@ -89,7 +89,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
   };
 
   const clearItem = () => {
-    setAmount('');
+    setAmount('0');
     setDescription('');
     setItemId(null);
   };
@@ -153,8 +153,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
         )}
         <Button
           onClick={handleSaveInvoice}
-          className={!isFilled ? " cursor-not-allowed" : ""}
-          variant={!isFilled ? "secondary" : 'default'}
+          variant={!isFilled ? "disabled" : 'default'}
         >
           Save
         </Button>
