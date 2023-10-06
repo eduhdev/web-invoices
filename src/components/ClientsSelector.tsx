@@ -1,5 +1,5 @@
 'use client';
-import { Client, useClients } from '@/hooks/useClients';
+import { useClients } from '@/hooks/useClients';
 import {
   Select,
   SelectContent,
