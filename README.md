@@ -3,6 +3,7 @@
 Web Invoices is a web-based invoicing system designed to create, edit, and manage invoices.
 This application uses mocked data, is built using Next.js and is deployed on Vercel.
 
+[Live Demo](https://web-invoices.vercel.app/invoices)
 ## Installation Instructions
 
 To set up Web Invoices on your local environment, follow these steps:
@@ -59,6 +60,7 @@ bun dev
 ```
 
 7. Your Web Invoices application should now be running locally at the specified URL.
+8. Sign In with your github account and you will be able to use the application.
 
 ## Libraries/Frameworks Used
 
@@ -69,3 +71,4 @@ Web Invoices is built using the following libraries and frameworks:
 - [Radix UI](https://www.radix-ui.com/)
 - [Shadcn UI](https://ui.shadcn.com/) (for stylized Radix UI components)
 - [Lucide React](https://lucide.dev/guide/packages/lucide-react) (for icons)
+- [Next Auth](https://next-auth.js.org/) (for authentication)
