@@ -38,7 +38,7 @@ export default async function RootLayout({
               </AppProvider>
 
               <div className='flex flex-1'>
-                <div className='flex-1 pt-8 px-4'>{children}</div>
+                <div className='flex-1 py-8 px-4'>{children}</div>
               </div>
             </div>
           </ClientsProvider>

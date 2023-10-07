@@ -34,8 +34,8 @@ const SidebarNav = () => {
         </Avatar>
         <Separator className='opacity-50' />
         <div className='text-lg space-y-2 mt-8 flex flex-col text-center'>
-          <Link href='/invoices'>Invoices</Link>
-          <Link href='/clients'>Clients</Link>
+          <Link href='/invoices' onClick={handleMobMenu}>Invoices</Link>
+          <Link href='/clients' onClick={handleMobMenu}>Clients</Link>
         </div>
         <Button
           className='mt-auto w-full'

@@ -24,8 +24,8 @@ const InvoiceTable = () => {
         A list of your recent invoices.
       </TableCaption>
       <TableHeader>
-        <TableRow>
-          <TableHead className='w-[100px]'>Invoice</TableHead>
+        <TableRow className='max-md:text-xs'>
+          <TableHead className='md:w-[100px]'>Invoice</TableHead>
           <TableHead>Client Name</TableHead>
           <TableHead>Total Amount</TableHead>
           <TableHead>Status</TableHead>
@@ -47,7 +47,7 @@ const InvoiceTable = () => {
               0
             );
             return (
-              <TableRow className='h-12' key={invoice.id}>
+              <TableRow className='h-12 max-md:text-xs' key={invoice.id}>
                 <TableCell className='font-medium'>INV-{invoice.id}</TableCell>
                 <TableCell>{clientName}</TableCell>
                 <TableCell>{formatToPrice(totalAmount)}</TableCell>

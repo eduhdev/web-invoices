@@ -23,13 +23,13 @@ const InvoiceItemsTable = ({
     <TableHeader>
       <TableRow>
         <TableHead>Description</TableHead>
-        <TableHead className='w-[100px]'>Amount</TableHead>
-        <TableHead className='w-[100px] text-right'>Action</TableHead>
+        <TableHead className='md:w-[100px]'>Amount</TableHead>
+        <TableHead className='md:w-[100px] text-right'>Action</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       {data?.map((item) => (
-        <TableRow key={item.id}>
+        <TableRow key={item.id} className='max-sm:text-xs'>
           <TableCell>{item.description}</TableCell>
           <TableCell>{formatToPrice(item.amount)}</TableCell>
           <TableCell className='flex justify-end pr-4'>

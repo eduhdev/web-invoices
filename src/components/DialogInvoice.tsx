@@ -41,7 +41,7 @@ const DialogInvoice = ({
         <Button className='h-10 order-2 md:order-none'>Add a new entry</Button>
       </DialogTrigger>
 
-      <DialogContent className='md:max-w-[425px]'>
+      <DialogContent className='h-screen sm:h-auto flex flex-col justify-center md:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>What did you achieve during that time?</DialogTitle>
           <DialogDescription>
@@ -56,14 +56,14 @@ const DialogInvoice = ({
             rows={6}
             placeholder='Fix CSS issues'
           />
-          <div className='flex items-center justify-end gap-8'>
+          <div className='flex flex-col sm:flex-row items-center justify-center sm:justify-end gap-2 md:gap-8'>
             <Label htmlFor='amount'>Amount</Label>
             <Input
               id='amount'
               value={amount}
               onChange={(e) => handleAmount(e.target.value)}
               placeholder='Amount'
-              className='w-36'
+              className='w-36 text-center'
               type='number'
             />
           </div>

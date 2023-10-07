@@ -21,9 +21,9 @@ const DialogNewClient = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='mt-4'>Create New</Button>
+        <Button className='mt-4 max-sm:w-full'>Create New</Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[425px] max-w-[90vw] '>
         <DialogHeader>
           <DialogTitle>Add a new Client</DialogTitle>
         </DialogHeader>
