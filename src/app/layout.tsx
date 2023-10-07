@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { ClientsProvider } from '@/hooks/useClients';
 import SessionProvider from '@/components/SessionProvider';
 import SidebarNav from '@/components/SidebarNav';
+import { AppProvider } from '@/hooks/useApp';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,10 +30,12 @@ export default async function RootLayout({
       <body className={inter.className}>
         <InvoicesProvider>
           <ClientsProvider>
-            <div className='flex'>
-              <SessionProvider session={session}>
-                <SidebarNav />
-              </SessionProvider>
+            <div className='flex flex-col md:flex-row'>
+              <AppProvider>
+                <SessionProvider session={session}>
+                  <SidebarNav />
+                </SessionProvider>
+              </AppProvider>
 
               <div className='flex flex-1'>
                 <div className='flex-1 pt-8 px-4'>{children}</div>
