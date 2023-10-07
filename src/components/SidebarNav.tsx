@@ -38,7 +38,7 @@ const SidebarNav = () => {
           <Link href='/clients' onClick={handleMobMenu}>Clients</Link>
         </div>
         <Button
-          className='mt-auto w-full'
+          className='mt-auto w-full mb-10'
           variant='secondary'
           onClick={() => signOut()}
         >
