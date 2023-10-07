@@ -3,7 +3,7 @@
 import { DatePicker } from '@/components/DatePicker';
 import { Button } from '@/components/ui/button';
 import { formatToPrice } from '@/lib/utils';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Invoice,
   InvoiceItem,
@@ -20,7 +20,9 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
   const [clientId, setClientId] = useState<string | undefined>(
     invoice?.clientId?.toString() || undefined
   );
-  const [dueDate, setDueDate] = useState<Date | undefined>(invoice?.dueDate || undefined)
+  const [dueDate, setDueDate] = useState<Date | undefined>(
+    invoice?.dueDate || undefined
+  );
   const [paid, setPaid] = useState<InvoiceStatus>(invoice?.paid || false);
   const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>(
     invoice?.items || []
@@ -33,9 +35,14 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
 
   const router = useRouter();
 
-  const totalAmount =
-    invoiceItems?.reduce((accumulator, item) => accumulator + item.amount, 0) ||
-    0;
+  const totalAmount = useMemo(
+    () =>
+      invoiceItems?.reduce(
+        (accumulator, item) => accumulator + item.amount,
+        0
+      ) || 0,
+    [invoiceItems]
+  );
 
   const handleUpdateItem = () => {
     const item = {
@@ -58,7 +65,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
     setInvoiceItems((invoices) => [...invoices, newArray]);
   };
 
-  const isFilled = !!invoiceItems.length && clientId  && dueDate
+  const isFilled = !!invoiceItems.length && clientId && dueDate;
 
   const handleSubmitItem = () => {
     if (itemId) {
@@ -70,7 +77,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
   };
 
   const handleSaveInvoice = async () => {
-    if(!isFilled) return
+    if (!isFilled) return;
     const newInvoice = {
       id: invoice?.id,
       clientId: Number(clientId),
@@ -100,7 +107,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
     setDescription(item!.description);
     setAmount(item!.amount.toString());
   };
-  
+
   return (
     <>
       <h1 className='text-4xl font-semibold'>
@@ -125,7 +132,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
           }}
         />
         <div className='w-full md:w-auto md:ml-auto'>
-          <DatePicker onChange={e => setDueDate(e)} defaultValue={dueDate}/>
+          <DatePicker onChange={(e) => setDueDate(e)} defaultValue={dueDate} />
         </div>
       </div>
 
@@ -139,7 +146,11 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
         <p className='text-xl font-bold'>Total: {formatToPrice(totalAmount)}</p>
       </div>
       <div className='flex justify-end mt-10 gap-2'>
-        <Button className='mr-auto' variant="outline" onClick={() => router.back()}>
+        <Button
+          className='mr-auto'
+          variant='outline'
+          onClick={() => router.back()}
+        >
           Back
         </Button>
         {!paid ? (
@@ -153,7 +164,7 @@ const CreateEditInvoice = ({ invoice }: { invoice?: Invoice }) => {
         )}
         <Button
           onClick={handleSaveInvoice}
-          variant={!isFilled ? "disabled" : 'default'}
+          variant={!isFilled ? 'disabled' : 'default'}
         >
           Save
         </Button>
